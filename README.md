@@ -50,7 +50,8 @@ If the code fails to get the correct connectivity, it can still be fixed by Nek5
 - (TODO): 3D is not there yet
 - (TODO): multi-block is not tested at allA
 - (TODO): new version v04 rea and v02 co2
-- (TODO): Support quadratic elements (Hex20) 
+- (TODO): Support quadratic elements (Hex20)    
+  chk rea, chk jac, unify new points via `one_to_one`
 - (TODO): save plots into vtk. MATLAB/OCTAVE is slow.
 - (TODO): More tests needed.
 

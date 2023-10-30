@@ -57,7 +57,7 @@ function dump_rea_2d(fname,X,Hexes,CBC,iforder2,Hex20,verbose);
       end
       for e=1:E
       for f=1:4
-         fprintf(fid,fmt,f,e,X(Hex20(e,iftoiv27(f)),1),X(Hex20(e,iftoiv27(f)),1),0,0,0,'m');
+         fprintf(fid,fmt,f,e,X(Hex20(e,iftoiv27(f)),1),X(Hex20(e,iftoiv27(f)),2),0,0,0,'m');
       end
       end
    end
@@ -156,7 +156,7 @@ function dump_rea_3d(fname,X,Hexes,CBC,iforder2,Hex20,verbose);
       %    write(10,'(i2,i12,5g14.6,1x,a1)') i,eg,(vcurve(k,i,kb),k=1,5),cc
       % endif
       
-      iftoiv27=[2,6,8,4];
+      iftoiv27=[2,6,8,4,10,12,18,16,20,24,26,22]; % TODO: not tested
       if (E<1E3)
          fmt = '%3d%3d %13.5e %13.5e %13.5e %13.5e %13.5e %1s\n';
       elseif (E<1E6)
@@ -165,8 +165,10 @@ function dump_rea_3d(fname,X,Hexes,CBC,iforder2,Hex20,verbose);
          fmt = '%2d%12d %13.5e %13.5e %13.5e %13.5e %13.5e %1s\n';
       end 
       for e=1:E
-      for f=1:4
-         fprintf(fid,fmt,f,e,X(Hex20(e,iftoiv27(f)),1),X(Hex20(e,iftoiv27(f)),1),0,0,0,'m');
+      for f=1:12
+         fprintf(fid,fmt,f,e,...
+                 X(Hex20(e,iftoiv27(f)),1),X(Hex20(e,iftoiv27(f)),2),...
+                 X(Hex20(e,iftoiv27(f)),3),0,0,'m');
       end
       end
    end
