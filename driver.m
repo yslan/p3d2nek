@@ -5,12 +5,13 @@ pause(.1);hdr;
 % The output will ne Nek's .rea file and .con file
 
 %% Controls
-%fname = 'naca0012_f0';
-fname = 'naca0012';
+fname = 'naca0012_f0';
+%fname = 'naca0012';
 %fname = 'naca0012_sharp';
 verbose = 2; % 0=minimal, 1=default, 2=everything
 ifplot = 2;  % 0=no plot, 1=plot mesh, 2=plot mesh + BC
 ifco2 = 0;   % 0=ascii .con file, 1=binary .co2 file
+iforder2 = 0;% 0=linear mesh, 1=second order mesh (experimental)
 
 
 gen_logfile(fname,1);
@@ -32,7 +33,7 @@ disp_step(2,'Generate mesh');
 %% Step 3: generate connectivity
 disp_step(3,'Generate connectivity');
 % chk if .nmf matches .p3d
-[dim, ierr_nmf] = chk_input(dat_p3d, dat_nmf); % mainly checking nmf
+[dim, ierr_nmf] = chk_nmf_input(dat_p3d, dat_nmf); % mainly checking nmf
 
 % First pass: nmf should give a water-tight mesh
 status1=-1;
@@ -52,8 +53,18 @@ if (status2>0);  con_source_s=[con_source_s 'UniqTol']; con_source_i=con_source_
 if (isempty(con_source_s)); con_source_s='none'; end
 
 
-%% Step 4: boundary conditions
-disp_step(4,'Generate boundary conditions');
+%% Step 4: Conver to higher order
+if (iforder2==1)
+   disp_step(4,'Generate 2nd order mesh');
+   [X, Hex20, status4] = gen_hex20(X, Hexes, dat_p3d, verbose);
+else;
+   Hex20=[];
+end
+if (status4~=0); iforder2=0; end % reduce to linear
+
+
+%% Step 5: boundary conditions
+disp_step(5,'Generate boundary conditions');
 nface = 2*dim; E = size(Hexes,1);
 CBC = zeros(E,nface); BC_map=cell(0);
 
@@ -72,22 +83,25 @@ if (con_source_i>0); % meshing connectivity is established.
 end
 
 
-%% DUMP Nek file(s)
-disp_step(5,'Dump output');
+%% Step 6: DUMP Nek file(s)
+disp_step(6,'Dump output');
 fdro = 'outputs'; fout=[fdro '/' fname];
-dump_nek_rea(fout,X,Hexes,CBC,verbose); 
+if (exist(fdro)~=7); mkdir(fdro); end
+
+dump_nek_rea(fout,X,Hexes,CBC,iforder2,Hex20,verbose); 
 dump_nek_con(fout,Hexes,ifco2,verbose);
 
 
 %% Summary
-disp_step(5,'Summary');
+disp_step(10,'Summary');
 
 % plotting
 if(ifplot>0); ifig=1;plot_mesh(ifig,X,Hexes); end           % mesh
 if(ifplot>1); ifig=2;plot_CBC(ifig,X,Hexes,CBC,BC_map); end % mesh + CBC
+if(ifplot>0 && iforder2==1); ifig=11;plot_hex20(ifig,X,Hex20); end
 
 % print mesh metrics
-mesh_quality = chk_hex_metric(X,Hexes,'',verbose);
+mesh_quality = chk_hex_metric(X,Hexes,'',verbose); % TODO iforder2
 print_BC_map(CBC,BC_map,verbose);
 
 
