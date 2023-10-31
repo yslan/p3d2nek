@@ -27,6 +27,14 @@ The NMF file also includes boundary conditions.
    - `<fname>.con`: This is the Ascii connectivity file. 
    - `<fname>.log`: The stdout from terminal is redirected to this logfile. A previous one is backup to `.log1`
 
+5. Complete rea file    
+   One can use the script. For example, this will read `naca0012_f0.out` and generate `naca0012_f0.rea`  
+   ```
+   cd outputs/;
+   ../scripts/mkrea.sh naca0012_f0.out
+   ```
+  
+
 
 ### Watertight    
 Watertightness is not a requirement but it be useful to inspect the meshes and detect potential error before running the simulations.
@@ -48,12 +56,14 @@ If the code fails to get the correct connectivity, it can still be fixed by Nek5
 - (Feature): Octave supports
 - (Feature): auto-gen logfiles
 - (TODO): 3D is not there yet
-- (TODO): multi-block is not tested at allA
+- (TODO): multi-block is not tested at all
 - (TODO): new version v04 rea and v02 co2
 - (TODO): Support quadratic elements (Hex20)    
-  chk rea, chk jac, unify new points via `one_to_one`
+  chk rea, chk jac, unify new points via `one_to_one`    
+  prenek reads ok       
 - (TODO): save plots into vtk. MATLAB/OCTAVE is slow.
 - (TODO): More tests needed.
+- (TODO): complete ascii rea file inside `writer_rea.m`
 
 
 ### References

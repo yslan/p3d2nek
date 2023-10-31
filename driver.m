@@ -11,7 +11,7 @@ fname = 'naca0012_f0';
 verbose = 2; % 0=minimal, 1=default, 2=everything
 ifplot = 2;  % 0=no plot, 1=plot mesh, 2=plot mesh + BC
 ifco2 = 0;   % 0=ascii .con file, 1=binary .co2 file
-iforder2 = 0;% 0=linear mesh, 1=second order mesh (experimental)
+iforder2 = 1;% 0=linear mesh, 1=second order mesh (experimental)
 
 
 gen_logfile(fname,1);
@@ -58,7 +58,7 @@ if (iforder2==1)
    disp_step(4,'Generate 2nd order mesh');
    [X, Hex20, status4] = gen_hex20(X, Hexes, dat_p3d, verbose);
 else;
-   Hex20=[];
+   Hex20=[];status4=-1;
 end
 if (status4~=0); iforder2=0; end % reduce to linear
 
