@@ -54,4 +54,14 @@ fprintf('  GLL grid spacing %9.2e %2.2e %2.2e |',dat.dxmin); for i=1:N-1;fprintf
 fprintf('  scaled Jacobian  %9.2e %2.2e %2.2e |',dat.sc_jac);for i=1:N-1;fprintf(' %3d',c2(i));end;fprintf('\n');
 fprintf('  aspect ratio     %9.2e %2.2e %2.2e |',dat.aratio);for i=1:N-1;fprintf(' %3d',c3(i));end;fprintf('\n');
 fprintf('  max multiplicity %d\n',dat.max_mult);
+
+if (dat.sc_jac(1)<0); % negJac
+  minJac=min(jacm,[],2); negJac=find(minJac<0); nerr=length(negJac); 
+  nprt=min(3,nerr);eid = negJac(1:nprt);
+  fprintf('WARN: Found %d negJac elements! eid=',nerr); for i=1:nprt;fprintf(' %3d',eid(i));end;fprintf('\n');
+end
+end
+
+if (verbose>1)
+  dat.jacm = jacm;
 end
