@@ -53,18 +53,29 @@ If the code fails to get the correct connectivity, it can still be fixed by Nek5
 
 
 ### Notes
+
+| Features | 2D | 3D |
+|:---|:---:|:---:|
+| Octave | Yes | Yes but slow |
+| Second order mesh | Yes (`iforder2=1`) | Not yet |
+| Plotting | MATLAB plots | Not yet |
+| rea | Yes | Yes not slow |
+| re2 | Yes but not tested | Yes but no curved side |
+
 - (Feature): Octave supports
 - (Feature): auto-gen logfiles
-- (TODO): 3D is not there yet
+- (Feature): second order /octave
+- (Feature): 3D supported (limited)    
+  - plotting is not
 - (TODO): multi-block is not tested at all
 - (TODO): new version v04 rea and v02 co2
 - (TODO): Support quadratic elements (Hex20)    
+  2D is ok, 3D is not.  
   chk rea, chk jac, unify new points via `one_to_one`    
-  prenek reads ok       
 - (TODO): save plots into vtk. MATLAB/OCTAVE is slow.
 - (TODO): More tests needed.
 - (TODO): complete ascii rea file inside `writer_rea.m`
-
+- (TODO): improve connectivity control. 
 
 ### References
 
