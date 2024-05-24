@@ -8,11 +8,11 @@ pause(.1);hdr;
 fname = 'naca0012_f0';
 %fname = 'naca0012';
 %fname = 'naca0012_sharp';
+%fname = 'volumeMesh'; % 3D
 verbose = 2; % 0=minimal, 1=default, 2=everything
-ifplot = 2;  % 0=no plot, 1=plot mesh, 2=plot mesh + BC
+ifplot = 0;  % 0=no plot, 1=plot mesh, 2=plot mesh + BC
 ifco2 = 0;   % 0=ascii .con file, 1=binary .co2 file
 iforder2 = 1;% 0=linear mesh, 1=second order mesh (experimental)
-
 
 gen_logfile(fname,1);
 
@@ -54,6 +54,7 @@ if (isempty(con_source_s)); con_source_s='none'; end
 
 
 %% Step 4: Conver to higher order
+if (dim==3) iforder2 = 0; end % TODO hex20 interp + re2 hasn't supported 3D
 if (iforder2==1)
    disp_step(4,'Generate 2nd order mesh');
    [X, Hex20, status4] = gen_hex20(X, Hexes, dat_p3d, verbose);
@@ -88,7 +89,18 @@ disp_step(6,'Dump output');
 fdro = 'outputs'; fout=[fdro '/' fname];
 if (exist(fdro)~=7); mkdir(fdro); end
 
-dump_nek_rea(fout,X,Hexes,CBC,iforder2,Hex20,verbose); 
+if (dim==2)
+  ifre2 = 0; % we haven't tested 2D re2 writer yet
+elseif (dim==3)
+  ifre2 = 0;
+  if (size(Hexes,1)>1E4); ifre2=1; end
+end
+
+if (ifre2==0)
+  dump_nek_rea(fout,X,Hexes,CBC,iforder2,Hex20,verbose);
+else
+  dump_nek_re2(fout,X,Hexes,CBC,iforder2,Hex20,verbose);
+end
 dump_nek_con(fout,Hexes,ifco2,verbose);
 
 
@@ -96,6 +108,7 @@ dump_nek_con(fout,Hexes,ifco2,verbose);
 disp_step(10,'Summary');
 
 % plotting
+if(dim==3) ifplot==0; end % TODO: 3D plot is not added yet. we need vtk. otherwise, it's slow
 if(ifplot>0); ifig=1;plot_mesh(ifig,X,Hexes); end           % mesh
 if(ifplot>1); ifig=2;plot_CBC(ifig,X,Hexes,CBC,BC_map); end % mesh + CBC
 if(ifplot>0 && iforder2==1); ifig=11;plot_hex20(ifig,X,Hex20); end

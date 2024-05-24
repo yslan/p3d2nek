@@ -44,7 +44,7 @@ function [X, Hexes, iHtoiB] = gen_mesh_3d(dat_p3d)
 
    nb = dat_p3d.nblock;
    Hexes=[]; X=[]; iHtoiB=[];
-   for i=1:nb; x=dat_p3d.coord(i).x; y=dat_p3d.coord(i).y; x=dat_p3d.coord(i).x; nX0=size(X,1);
+   for i=1:nb; x=dat_p3d.coord(i).x; y=dat_p3d.coord(i).y; z=dat_p3d.coord(i).z; nX0=size(X,1);
 
       nx = dat_p3d.idims(i); nelx=nx-1; 
       ny = dat_p3d.jdims(i); nely=ny-1;

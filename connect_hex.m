@@ -4,7 +4,7 @@ nv=size(Hexes,2);
 
 if (nv==4); %2d
    con_table=connect_hex_2d(Hexes);
-elseif(dim==8); %3d
+elseif(nv==8); %3d
    con_table=connect_hex_3d(Hexes);
 end
 
