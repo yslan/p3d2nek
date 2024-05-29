@@ -11,7 +11,7 @@ fname = 'naca0012_f0';
 %fname = 'volumeMesh'; % 3D
 verbose = 2; % 0=minimal, 1=default, 2=everything
 ifplot = 0;  % 0=no plot, 1=plot mesh, 2=plot mesh + BC
-ifco2 = 0;   % 0=ascii .con file, 1=binary .co2 file
+%ifre2 = 0;  WIP  0=ascii .rea file, 1=binary .re2 file
 iforder2 = 1;% 0=linear mesh, 1=second order mesh (experimental)
 
 gen_logfile(fname,1);
@@ -98,10 +98,12 @@ end
 
 if (ifre2==0)
   dump_nek_rea(fout,X,Hexes,CBC,iforder2,Hex20,verbose);
+  dump_nek_con(fout,Hexes,0,verbose);
 else
   dump_nek_re2(fout,X,Hexes,CBC,iforder2,Hex20,verbose);
+  dump_nek_con(fout,Hexes,1,verbose);
 end
-dump_nek_con(fout,Hexes,ifco2,verbose);
+
 
 
 %% Summary
