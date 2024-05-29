@@ -36,32 +36,45 @@ dat.aratio=mma(aratio);
 % max multiplicity
 dat.max_mult=max(accumarray(Hexes(:),1)); % only works for water tight mesh.
 
-ifhist=0; if(exist('histcounts')==2); ifhist=1; end
-
-if(ifhist==1);
-   stt=@(v,n)histcounts(v,linspace(min(v(:)),max(v(:)+eps),n));
-   [c1,e1]=stt(dxmin,N); c1=int8(c1/E*100);
-   [c2,e2]=stt(sc_jac,N);c2=int8(c2/E*100);
-   [c3,e3]=stt(aratio,N);c3=int8(c3/E*100);
-else
-   N=0;
-end
-
+% check and print
 if (verbose>0)
-stype='Hex'; if (dim==2); stype='Quad'; end
-fprintf('INFO %s metrics: %s (min/max/ave | distr) (%2.4e sec)\n',stype,str,toc(t0));
-fprintf('  GLL grid spacing %9.2e %2.2e %2.2e |',dat.dxmin); for i=1:N-1;fprintf(' %3d',c1(i));end;fprintf('\n'); 
-fprintf('  scaled Jacobian  %9.2e %2.2e %2.2e |',dat.sc_jac);for i=1:N-1;fprintf(' %3d',c2(i));end;fprintf('\n');
-fprintf('  aspect ratio     %9.2e %2.2e %2.2e |',dat.aratio);for i=1:N-1;fprintf(' %3d',c3(i));end;fprintf('\n');
-fprintf('  max multiplicity %d\n',dat.max_mult);
-
-if (dat.sc_jac(1)<0); % negJac
+if (sum(isnan(sc_jac(:)))>0); % nanJac
+  nanJac=max(isnan(sc_jac),[],2); nanJac=find(nanJac>0); nerr=length(negJac);
+  nprt=min(3,nerr);eid = negJac(1:nprt);
+  fprintf('WARN: Found %d nanJac elements! eid=',nerr); for i=1:nprt;fprintf(' %3d',eid(i));end;fprintf('\n');
+end
+if (dat.sc_jac(1)<=0); % negJac
   minJac=min(jacm,[],2); negJac=find(minJac<0); nerr=length(negJac); 
   nprt=min(3,nerr);eid = negJac(1:nprt);
   fprintf('WARN: Found %d negJac elements! eid=',nerr); for i=1:nprt;fprintf(' %3d',eid(i));end;fprintf('\n');
 end
+
+ifhist=0; if(exist('histcounts')==2); ifhist=1; end
+if(ifhist==1);
+   [c1,e1,n1]=get_bin(dxmin,N); c1=int8(c1/E*100);
+   [c2,e2,n2]=get_bin(sc_jac,N);c2=int8(c2/E*100);
+   [c3,e3,n3]=get_bin(aratio,N);c3=int8(c3/E*100);
+else
+   N=0;
+end
+
+stype='Hex'; if (dim==2); stype='Quad'; end
+fprintf('INFO %s metrics: %s (min/max/ave | distr) (%2.4e sec)\n',stype,str,toc(t0));
+fprintf('  GLL grid spacing %9.2e %2.2e %2.2e |',dat.dxmin); for i=1:n1-1;fprintf(' %3d',c1(i));end;fprintf('\n');
+fprintf('  scaled Jacobian  %9.2e %2.2e %2.2e |',dat.sc_jac);for i=1:n2-1;fprintf(' %3d',c2(i));end;fprintf('\n');
+fprintf('  aspect ratio     %9.2e %2.2e %2.2e |',dat.aratio);for i=1:n3-1;fprintf(' %3d',c3(i));end;fprintf('\n');
+fprintf('  max multiplicity %d\n',dat.max_mult);
+
 end
 
 if (verbose>1)
   dat.jacm = jacm;
 end
+
+function [c,e,n] = get_bin(v,N)
+  n = N;
+  if sum(isnan(v(:)))>0 
+    N = 0;
+  end
+  [c,e] = histcounts(v,linspace(min(v(:)),max(v(:))+eps,N));
+
