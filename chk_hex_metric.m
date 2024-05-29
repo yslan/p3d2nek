@@ -40,7 +40,7 @@ dat.max_mult=max(accumarray(Hexes(:),1)); % only works for water tight mesh.
 if (verbose>0)
 if (sum(isnan(sc_jac(:)))>0); % nanJac
   nanJac=max(isnan(sc_jac),[],2); nanJac=find(nanJac>0); nerr=length(nanJac);
-  nprt=min(3,nerr);eid = negJac(1:nprt);
+  nprt=min(3,nerr);eid = nanJac(1:nprt);
   fprintf('WARN: Found %d nanJac elements! eid=',nerr); for i=1:nprt;fprintf(' %3d',eid(i));end;fprintf('\n');
 end
 if (dat.sc_jac(1)<=0); % negJac
