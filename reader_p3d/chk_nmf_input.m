@@ -1,4 +1,4 @@
-function [dim,ierr] = chk_input(dat_p3d,dat_nmf);
+function [dim,ierr] = chk_nmf_input(dat_p3d,dat_nmf);
 
 dim = dat_p3d.dim; ierr = 1; 
 
