@@ -9,6 +9,8 @@ fname = 'naca0012_f0';
 %fname = 'naca0012';
 %fname = 'naca0012_sharp';
 %fname = 'volumeMesh'; % 3D
+fname = 'airfoil';
+fname = 'uCRM-9_wbt_coarse_MB';
 verbose = 2; % 0=minimal, 1=default, 2=everything
 ifplot = 0;  % 0=no plot, 1=plot mesh, 2=plot mesh + BC
 %ifre2 = 0;  WIP  0=ascii .rea file, 1=binary .re2 file
@@ -26,9 +28,25 @@ dat_nmf = read_dat_nmf([fdri '/' fname ext2], verbose);
 
 %% Step 2: generate mesh block-by-block
 disp_step(2,'Generate mesh');
+
+dat_p3d_o = dat_p3d;
+dnew.nblock = dat_p3d.nblock;
+dnew.dim = dat_p3d.dim;
+dnew.idims = (dat_p3d.idims-1)/2+1;
+dnew.jdims = (dat_p3d.jdims-1)/2+1;
+dnew.kdims = (dat_p3d.kdims-1)/2+1;
+for i=1:dat_p3d.nblock
+x = dat_p3d.coord(i).x(1:2:end,1:2:end,1:2:end);
+y = dat_p3d.coord(i).y(1:2:end,1:2:end,1:2:end);
+z = dat_p3d.coord(i).z(1:2:end,1:2:end,1:2:end); 
+c.x=x;c.y=y;c.z=z;
+coord(i) = c;
+end
+dnew.coord = coord;
+dat_p3d = dnew;
+
 % X: (npts,dim), Hexes: (E, 2^dim)
 [X, Hexes, iHtoiB] = gen_mesh(dat_p3d, verbose);
-
 
 %% Step 3: generate connectivity
 disp_step(3,'Generate connectivity');

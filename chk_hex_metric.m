@@ -48,6 +48,11 @@ if (dat.sc_jac(1)<=0); % negJac
   nprt=min(3,nerr);eid = negJac(1:nprt);
   fprintf('WARN: Found %d negJac elements! eid=',nerr); for i=1:nprt;fprintf(' %3d',eid(i));end;fprintf('\n');
 end
+if (min(dxmin)<=0); % zero / negative edges
+  badEdge=find(dxmin<=0); nerr=length(badEdge);
+  nprt=min(3,nerr);eid = badEdge(1:nprt);
+  fprintf('WARN: Found %d elements with badEdge (<=0)! eid=',nerr); for i=1:nprt;fprintf(' %3d',eid(i));end;fprintf('\n');
+end
 
 ifhist=0; if(exist('histcounts')==2); ifhist=1; end
 if(ifhist==1);
